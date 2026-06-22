@@ -1,0 +1,27 @@
+{
+  "name": "@pryv/adapter-template-and-docs",
+  "version": "0.0.1",
+  "description": "Contract, manifest schema and template for Pryv adapters — transient converters between Pryv and an external standard.",
+  "homepage": "https://github.com/pryv/adapter-template-and-docs",
+  "bugs": {
+    "url": "https://github.com/pryv/adapter-template-and-docs/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pryv/adapter-template-and-docs.git"
+  },
+  "license": "BSD-3-Clause",
+  "author": "Pryv S.A. <info@pryv.com> (https://pryv.com)",
+  "type": "module",
+  "scripts": {
+    "license": "source-licenser --config-file .licenser.yml ./",
+    "test": "node --test test/*.test.js"
+  },
+  "devDependencies": {
+    "ajv": "^8.17.1",
+    "source-licenser": "^2.0.5"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  }
+}

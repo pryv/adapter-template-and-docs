@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pryv.github.io/adapter-template-and-docs/manifest.schema.json",
+  "title": "Pryv adapter manifest",
+  "description": "Self-description served by an adapter at GET <base>/manifest.json. A Pryv core advertises only the adapter's base URL in /service/info; clients fetch the manifest for the details.",
+  "type": "object",
+  "required": ["name", "type", "version"],
+  "additionalProperties": true,
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Short adapter name, unique within a deployment."
+    },
+    "type": {
+      "type": "string",
+      "description": "Adapter class — the external standard it bridges (e.g. 'calendar', 'fhir', 'mail')."
+    },
+    "version": {
+      "type": "string",
+      "description": "Adapter version (semver recommended)."
+    },
+    "title": {
+      "type": "string",
+      "description": "Human-readable title."
+    },
+    "description": {
+      "type": "string",
+      "description": "One-line description."
+    },
+    "useCases": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Implemented use cases (free-form, kebab-case identifiers)."
+    },
+    "ui": {
+      "type": "string",
+      "description": "Path to the web UI, relative to the adapter base URL."
+    },
+    "auth": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Supported subscription / credential auth modes (e.g. 'plaintext', 'sealed')."
+    },
+    "standards": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "External standards the adapter speaks (e.g. 'RFC5545')."
+    }
+  }
+}

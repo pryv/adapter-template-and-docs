@@ -1,0 +1,11 @@
+{
+  "name": "calendar",
+  "type": "calendar",
+  "version": "0.0.1",
+  "title": "Pryv calendar adapter",
+  "description": "Expose selected Pryv events as an iCalendar subscription feed.",
+  "useCases": ["pryv-to-ical-feed"],
+  "ui": "/",
+  "auth": ["plaintext", "sealed"],
+  "standards": ["RFC5545"]
+}
