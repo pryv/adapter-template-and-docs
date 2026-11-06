@@ -7,5 +7,6 @@
   "useCases": ["pryv-to-ical-feed"],
   "ui": "/",
   "auth": ["plaintext", "sealed"],
-  "standards": ["RFC5545"]
+  "standards": ["RFC5545"],
+  "baseTemplate": "https://{username}.example.com/adapter/calendar/"
 }

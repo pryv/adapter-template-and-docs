@@ -27,6 +27,18 @@ test('name, type and version are required', () => {
   assert.equal(validate({ name: 'x', type: 'y', version: '1.0.0' }), true);
 });
 
+test('[ADDR1] baseTemplate takes the {username} template form, platformBase a plain base', () => {
+  const base = { name: 'x', type: 'y', version: '1' };
+  assert.equal(validate({ ...base, baseTemplate: 'https://{username}.example.com/adapter/x/' }), true);
+  assert.equal(validate({ ...base, baseTemplate: 'https://core.example.com/{username}/adapter/x/' }), true);
+  assert.equal(validate({ ...base, baseTemplate: 'https://alice.example.com/adapter/x/' }), false, 'no placeholder');
+  assert.equal(validate({ ...base, baseTemplate: 'https://{username}.example.com/adapter/x' }), false, 'no final /');
+  assert.equal(validate({ ...base, baseTemplate: 'ftp://{username}.example.com/' }), false);
+  assert.equal(validate({ ...base, platformBase: 'https://reg.example.com/adapter/x/' }), true);
+  assert.equal(validate({ ...base, platformBase: 'https://{username}.example.com/adapter/x/' }), false, 'placeholder');
+  assert.equal(validate({ ...base, platformBase: 'https://reg.example.com/adapter/x' }), false, 'no final /');
+});
+
 test('typed array fields reject wrong item types', () => {
   assert.equal(validate({ name: 'x', type: 'y', version: '1', auth: ['ok'] }), true);
   assert.equal(validate({ name: 'x', type: 'y', version: '1', auth: [42] }), false);
