@@ -1,6 +1,6 @@
 {
   "name": "@pryv/adapter-template-and-docs",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Contract, manifest schema and template for Pryv adapters — transient converters between Pryv and an external standard.",
   "homepage": "https://github.com/pryv/adapter-template-and-docs",
   "bugs": {
