@@ -45,6 +45,16 @@
       "type": "array",
       "items": { "type": "string" },
       "description": "External standards the adapter speaks (e.g. 'RFC5545')."
+    },
+    "baseTemplate": {
+      "type": "string",
+      "pattern": "^https?://\\S*\\{username\\}\\S*/$",
+      "description": "Recommended. The adapter's base URL in the platform's {username} template form, as /service/info.adapters lists it (e.g. 'https://{username}.example.com/adapter/calendar/'); ends with '/'. A client fills the placeholder with the account's username (or address alias) to address that account. Adapter-specific endpoint members are relative to it, or absolute in the same template form."
+    },
+    "platformBase": {
+      "type": "string",
+      "pattern": "^https?://[^\\s{}]*/$",
+      "description": "Optional. The adapter's base URL at a platform address (e.g. 'https://reg.example.com/adapter/calendar/'), for callers that address no account; ends with '/', no placeholder."
     }
   }
 }
