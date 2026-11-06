@@ -36,6 +36,7 @@ test('[ADDR3] addressedAccount reads a Fetch API Request too', () => {
     headers: { 'X-Adapter-Name': 'alice', 'X-Adapter-Base': BASE }
   });
   assert.deepEqual(addressedAccount(req), { name: 'alice', base: BASE });
+  assert.equal(addressedAccount(new Request('https://reg.example.com/adapter/calendar/x')), null, 'no headers');
 });
 
 test('[ADDR4] addressedAccount is null at a platform address, and never reads Host', () => {
@@ -64,10 +65,12 @@ test('[ADDR6] a base with an explicit port is kept as sent', () => {
 });
 
 test('[ADDR7] resourceUrl uses the account base, else the configured platform base', () => {
-  assert.equal(resourceUrl(addressed, 'r4/metadata', PLATFORM), BASE + 'r4/metadata');
-  assert.equal(resourceUrl(addressed, '/r4/metadata', PLATFORM), BASE + 'r4/metadata');
-  assert.equal(resourceUrl(platform, 'r4/metadata', PLATFORM), PLATFORM + 'r4/metadata');
+  assert.equal(resourceUrl(addressed, 'facade/metadata', PLATFORM), BASE + 'facade/metadata');
+  assert.equal(resourceUrl(addressed, '/facade/metadata', PLATFORM), BASE + 'facade/metadata');
+  assert.equal(resourceUrl(platform, 'facade/metadata', PLATFORM), PLATFORM + 'facade/metadata');
   assert.equal(resourceUrl(nodeReq({ host: 'alice.example.com' }), 'x', PLATFORM), PLATFORM + 'x', 'Host is never used');
+  assert.equal(resourceUrl(addressed, 'x'), BASE + 'x', 'no platformBase needed when addressed');
+  assert.throws(() => resourceUrl(platform, 'x'), /platformBase is required/);
 });
 
 test('[ADDR8] requireAccount answers 404 JSON at a platform address', () => {

@@ -94,9 +94,9 @@ https://core-a.example.com/adapter/calendar/...   platform address too
 
 A per-user address is a host of the form `<name>.<platform domain>` (the
 platform's `dns.domain`); any other host is a platform address. The name may be
-a username or an address alias the account owner created. Platforms without
-per-user hosts (single-core, the username in the path) have platform addresses
-only for now.
+a username or, on platforms that offer them, an address alias the account owner
+created. Platforms without per-user hosts (the username in the path, no per-user
+DNS) have platform addresses only for now.
 
 ### What the core guarantees
 
@@ -113,7 +113,7 @@ the triage, so the adapter needs no platform knowledge:
 
   | Header | Value | Example |
   |---|---|---|
-  | `X-Adapter-Name` | the addressed name, lowercased, as addressed (username or alias; a former username stays an address after a rename) | `alice` |
+  | `X-Adapter-Name` | the addressed name, lowercased, as addressed (username or, where offered, an alias; a former username stays an address after a rename) | `alice` |
   | `X-Adapter-Base` | your base for that account, as the client addressed it: scheme, host (port kept), your route root, ending with `/` | `https://alice.example.com/adapter/calendar/` |
 
 ### What the adapter does
@@ -132,16 +132,21 @@ the triage, so the adapter needs no platform knowledge:
   account (manifest, status, a sign-in or triage page), a platform-level resource
   if you have one, or `404`. **Never derive a per-user label from `Host`**: which
   host labels are accounts is the platform's knowledge, and the core already
-  applied it.
+  applied it. Reflecting the request's own origin (`X-Forwarded-Proto` + `Host`)
+  into a link is a different act, tolerated for an adapter whose links bind no
+  account (a feed whose URL carries its own credentials); a resource server does
+  not do it: its `resource` is a published, audience-bound value and comes from
+  `X-Adapter-Base` or from its configuration.
 - It never calls `/reg/<username>/server`, never keeps a map of cores, never
   matches host labels against a list of region or service names.
 - **After an account moves to another core its address is unchanged.** A client
   that gets a `421` or a `503` with `Retry-After` retries **the same per-user
   URL** after the delay. When the platform's token introspection answers the
-  adapter `421` for a per-user address (the account is moving), the adapter
-  answers its client `503` with `Retry-After`, not `401`. A `coreUrl` member in the answer identifies the core that
-  should be answering, for diagnostics only: it is **not** an address to call
-  (`coreUrl` + your path is a platform address and names no account).
+  adapter `421` for a per-user address (the account is served elsewhere: a move
+  in progress, or a stale route), the adapter answers its client `503` with
+  `Retry-After`, not `401`. A `coreUrl` member in the answer identifies the core
+  that should be answering, for diagnostics only: it is **not** an address to
+  call (`coreUrl` + your path is a platform address and names no account).
 - A browser UI on a per-user origin: the core adds no CORS header on adapter
   paths, its `421` included, so a browser sees a misrouted request as a CORS or
   network error; retry the same URL a few minutes later. Your own answers carry
@@ -166,7 +171,10 @@ spelling, `X_Adapter_Name` included) before setting its own. Therefore:
 - A proxy that routes adapter paths **around** the core forfeits the triage and
   the headers: no `421`, no `X-Adapter-*`. Let the core forward adapter paths. If
   a bypass cannot be avoided, the proxy must clear both headers, and the adapter
-  serves platform addresses only there.
+  serves platform addresses only there: a per-user host reached around the core
+  is a platform address, because nobody applied the platform's rule to it (which
+  labels are accounts, and where each one lives, is the core's knowledge, never
+  yours).
 
 ### What a caller does
 

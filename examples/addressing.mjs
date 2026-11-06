@@ -53,6 +53,8 @@ export function addressedAccount (req) {
   const name = header(req, NAME_HEADER);
   const base = header(req, BASE_HEADER);
   if (name == null || base == null) return null;
+  // DNS-label characters, deliberately looser than the platform's username rule
+  // (an address alias is a DNS label): do not tighten it.
   if (!/^[a-z0-9-]+$/.test(name) || !isBaseUrl(base)) return null;
   return { name, base };
 }
@@ -60,11 +62,13 @@ export function addressedAccount (req) {
 /**
  * The public URL of `path` (relative, no leading `/`) for this request: under the
  * addressed account's base, else under `platformBase`, the adapter's own configured
- * base at a platform address. Never built from `Host`.
+ * base at a platform address. Never built from `Host`. Throws at a platform
+ * address when `platformBase` is missing.
  */
 export function resourceUrl (req, path, platformBase) {
   const account = addressedAccount(req);
   const base = account != null ? account.base : platformBase;
+  if (base == null) throw new Error('resourceUrl: platformBase is required at a platform address');
   return base + path.replace(/^\/+/, '');
 }
 
